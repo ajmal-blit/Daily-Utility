@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff7f9">
+<title>UTILITY — Command Center</title>
+<style>
+:root{
+ --rose:#e85d75;--rose2:#c93e5b;--rose3:#f9a8b8;--ink:#24161a;--muted:#806b70;
+ --bg:#fff8fa;--card:rgba(255,255,255,.82);--soft:#fff0f3;--line:rgba(104,37,51,.12);
+ --good:#3aa981;--gold:#c88b3a;--shadow:0 25px 80px rgba(123,35,55,.12);--r:25px;
+ --grad-hero: linear-gradient(145deg,rgba(255,255,255,.9),rgba(255,239,243,.78));
+ --grad-bg: radial-gradient(circle at 8% -5%,rgba(232,93,117,.24),transparent 29%), radial-gradient(circle at 95% 8%,rgba(249,168,184,.28),transparent 25%), linear-gradient(135deg,#fff,#fff5f7 55%,#fff);
+}
+
+body.theme-emerald {
+ --rose:#10b981;--rose2:#059669;--rose3:#6ee7b7;--ink:#064e3b;--muted:#4b5563;
+ --bg:#f0fdf4;--card:rgba(255,255,255,.88);--soft:#ecfdf5;--line:rgba(16,185,129,.15);
+ --good:#10b981;--gold:#f59e0b;--shadow:0 25px 80px rgba(5,150,105,.12);
+ --grad-hero: linear-gradient(145deg,rgba(255,255,255,.9),rgba(209,250,229,.78));
+ --grad-bg: radial-gradient(circle at 8% -5%,rgba(16,185,129,.24),transparent 29%), radial-gradient(circle at 95% 8%,rgba(110,231,183,.28),transparent 25%), linear-gradient(135deg,#fff,#f0fdf4 55%,#fff);
+}
+
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--grad-bg);min-height:100vh;transition:background 0.3s ease, color 0.3s ease;}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+*{scrollbar-width:thin;scrollbar-color:var(--rose3) transparent}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;padding:22px 14px;border-right:1px solid var(--line);background:rgba(255,250,251,.72);backdrop-filter:blur(25px);z-index:50}
+.brand{display:flex;align-items:center;gap:12px;padding:6px 10px 28px;font-weight:950;letter-spacing:1px;font-size:21px}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:white;font-weight:1000;background:linear-gradient(135deg,var(--rose2),var(--rose));box-shadow:0 12px 35px rgba(201,62,91,.25)}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:var(--muted);padding:12px 13px;border-radius:14px;text-align:left;display:flex;gap:11px;align-items:center;width:100%;transition:.2s}.nav button:hover,.nav button.active{background:linear-gradient(90deg,rgba(232,93,117,.13),rgba(232,93,117,.03));color:var(--ink)}.nav button.active{box-shadow:inset 3px 0 var(--rose)}.ic{width:22px;text-align:center}
+.sidebar-bottom{position:absolute;bottom:18px;left:14px;right:14px}.mini-card{border:1px solid var(--line);background:rgba(255,255,255,.55);border-radius:17px;padding:14px;font-size:11px;color:var(--muted);line-height:1.55}
+.main{max-width:1700px;width:100%;margin:auto;padding:27px 30px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}.headline h1{margin:0;font-size:clamp(29px,3.1vw,46px);letter-spacing:-2px}.headline p{margin:7px 0 0;color:var(--muted);font-size:13px}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:rgba(255,255,255,.65);color:var(--ink);border-radius:13px;padding:10px 14px;transition:.18s}.btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(123,35,55,.08)}.btn.primary{background:linear-gradient(135deg,var(--rose2),var(--rose));border:0;color:#fff;font-weight:850;box-shadow:0 10px 25px rgba(201,62,91,.18)}.hamb{display:none}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,.72fr);gap:18px}.stack{display:grid;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:blur(22px);overflow:hidden;transition:background 0.3s, border-color 0.3s;}.pad{padding:21px}.hero{padding:26px;position:relative;overflow:hidden;background:var(--grad-hero)}.hero:before{content:"";position:absolute;width:330px;height:330px;right:-130px;top:-180px;border-radius:50%;background:radial-gradient(circle,rgba(232,93,117,.23),transparent 65%)}.eyebrow{font-size:10px;font-weight:900;color:var(--rose2);letter-spacing:1.7px}.hero-row{display:flex;justify-content:space-between;align-items:end;gap:20px}.big{font-size:46px;font-weight:1000;letter-spacing:-3px;margin-top:3px}.percent{color:var(--muted);font-size:12px}.progress{height:11px;background:rgba(0,0,0,0.05);border-radius:20px;overflow:hidden;margin-top:17px}.progress i{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--rose2),var(--rose3));border-radius:inherit;transition:.45s}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}.section-head h2{font-size:17px;margin:0}.sub{font-size:11px;color:var(--muted);margin-top:3px}
+.addbar{display:grid;grid-template-columns:1fr 125px 112px auto;gap:8px;margin-bottom:14px}.input{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.72);color:var(--ink);border-radius:12px;padding:11px 12px;outline:none}.input:focus{border-color:var(--rose2);box-shadow:0 0 0 3px rgba(232,93,117,.08)}
+.tasks{display:grid;gap:8px}.task{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:13px;border:1px solid var(--line);background:rgba(255,255,255,.5);border-radius:15px;transition:.2s}.task:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(123,35,55,.06)}.task.done{opacity:.48}.task.done .title{text-decoration:line-through}.check{width:21px;height:21px;border-radius:7px;border:1px solid var(--rose3);background:#fff;display:grid;place-items:center;color:#fff;cursor:pointer}.check.on{background:var(--rose);border-color:var(--rose)}.title{font-size:13px;font-weight:750}.meta{font-size:10px;color:var(--muted);margin-top:4px}.task-actions{display:flex}.iconbtn{border:0;background:transparent;color:var(--muted);padding:6px;cursor:pointer}.iconbtn:hover{color:var(--rose2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.stat{padding:15px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.52)}.stat b{font-size:24px}.stat span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.quick button{border:1px solid var(--line);background:rgba(255,255,255,.6);border-radius:14px;padding:13px;text-align:left;color:var(--ink)}.quick button:hover{background:var(--soft)}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar div{aspect-ratio:1;display:grid;place-items:center;border-radius:9px;color:var(--muted);font-size:10px}.calendar .head{font-size:8px;font-weight:900}.calendar .today{background:linear-gradient(135deg,var(--rose2),var(--rose));color:#fff;font-weight:900}.calendar .has{outline:1px solid var(--rose2)}
+.timer{font-size:45px;font-weight:1000;text-align:center;letter-spacing:-2px;margin:9px 0}.timer-controls{display:flex;justify-content:center;gap:8px}
+.quote{font-size:14px;line-height:1.55}.quote b{display:block;font-size:10px;color:var(--rose2);margin-top:8px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.search{max-width:390px;flex:1}.upcoming{display:grid;gap:9px}.up-row{display:grid;grid-template-columns:100px 1fr;gap:10px}.up-row>.task{height:100%}.date-pill{padding:15px 3px;color:var(--rose2);font-size:11px;font-weight:900;text-align:center}.empty{text-align:center;color:var(--muted);padding:32px;border:1px dashed var(--rose3);border-radius:15px;background:rgba(255,255,255,.35)}
+.habit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px}.habit{padding:17px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.55)}.habit-top{display:flex;justify-content:space-between;align-items:center}.habit h3{font-size:14px;margin:0}.days{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:13px}.day{height:22px;padding:0;border-radius:5px;background:var(--soft);border:1px solid var(--line)}.day.hit{background:var(--rose);border-color:var(--rose)}
+.notes-grid{display:grid;grid-template-columns:280px 1fr;gap:14px}.note-list{display:grid;gap:7px;align-content:start}.note-item{padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.55);cursor:pointer}.note-item.active{outline:2px solid var(--rose)}.note-item b{font-size:12px}.note-item small{display:block;color:var(--muted);margin-top:4px}.note-editor{display:grid;gap:9px}.note-editor textarea{min-height:370px}
+.focus-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px}.ring{width:210px;height:210px;margin:12px auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--rose) 0deg,var(--soft) 0deg);position:relative}.ring:after{content:"";position:absolute;inset:13px;background:white;border-radius:50%}.ring span{position:relative;z-index:1;font-size:30px;font-weight:950}
+.count-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.counter{padding:15px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.55)}.counter b{display:block;font-size:23px}.counter small{color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(7px);display:none;place-items:center;padding:18px;z-index:90}.modal.show{display:grid}.modal-box{width:min(560px,100%);background:var(--bg);border:1px solid var(--line);border-radius:23px;padding:23px;box-shadow:0 30px 100px rgba(0,0,0,.1)}.form{display:grid;gap:9px}.formrow{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.command{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(8px);display:none;place-items:start center;padding-top:13vh;z-index:100}.command.show{display:grid}.command-box{width:min(650px,calc(100% - 28px));background:var(--bg);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}.command-box input{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:17px}.commands{padding:8px;display:grid}.cmd{padding:11px;border-radius:10px;color:var(--muted);cursor:pointer}.cmd:hover{background:var(--soft);color:var(--ink)}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--ink);color:#fff;border-radius:13px;padding:12px 15px;transform:translateY(80px);opacity:0;transition:.25s;z-index:120}.toast.show{transform:none;opacity:1}
+
+.glass-hydration { background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; padding: 18px; display: grid; gap: 14px; }
+.glass-display { display: flex; align-items: center; justify-content: space-between; }
+.glass-count { font-size: 28px; font-weight: 900; letter-spacing: -1px; }
+.glass-count small { font-size: 14px; color: var(--muted); font-weight: 600; }
+.glass-bar-container { height: 18px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 30px; padding: 2px; overflow: hidden; }
+.glass-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #60a5fa, var(--rose)); border-radius: 30px; transition: width 0.4s ease; }
+.glass-btn-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
+.glass-btn { border: 1px solid rgba(255, 255, 255, 0.7); background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); border-radius: 12px; padding: 10px; font-weight: 800; font-size: 12px; color: var(--ink); cursor: pointer; }
+.glass-btn:hover { background: rgba(255, 255, 255, 0.85); transform: translateY(-2px); }
+
+.expense-list{display:grid;gap:8px;margin-top:12px;}
+.expense-item{display:flex;justify-content:space-between;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,0.5);}
+.scratchpad{width:100%;height:110px;border:1px solid var(--line);border-radius:12px;padding:10px;background:rgba(255,255,255,0.6);resize:none;outline:none;}
+
+@media(max-width:1100px){.app{grid-template-columns:78px 1fr}.sidebar{padding:20px 10px}.brand{justify-content:center}.brand span,.nav .label{display:none}.nav button{justify-content:center}.sidebar-bottom{display:none}.grid{grid-template-columns:1fr}}
+@media(max-width:720px){.app{display:block}.sidebar{position:fixed;left:-275px;width:260px;transition:.25s}.sidebar.open{left:0}.brand{justify-content:flex-start}.brand span,.nav .label{display:inline}.main{padding:17px}.hamb{display:block}.top{align-items:flex-start}.hide-mobile{display:none}.addbar{grid-template-columns:1fr auto}.addbar input[type=time],.addbar select{display:none}.stats{grid-template-columns:1fr 1fr}.notes-grid,.focus-grid{grid-template-columns:1fr}.note-list{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand"><div class="logo">U</div><span>UTILITY</span></div>
+ <nav class="nav">
+  <button class="active" data-view="dashboard"><span class="ic">⌂</span><span class="label">Command Center</span></button>
+  <button data-view="today"><span class="ic">◷</span><span class="label">Today</span></button>
+  <button data-view="tomorrow"><span class="ic">→</span><span class="label">Tomorrow</span></button>
+  <button data-view="upcoming"><span class="ic">▣</span><span class="label">Upcoming</span></button>
+  <button data-view="habits"><span class="ic">✓</span><span class="label">Habits</span></button>
+  <button data-view="expenses"><span class="ic">💳</span><span class="label">Expenses</span></button>
+  <button data-view="focus"><span class="ic">◉</span><span class="label">Focus</span></button>
+  <button data-view="notes"><span class="ic">✎</span><span class="label">Notes</span></button>
+  <button data-view="tools"><span class="ic">✦</span><span class="label">Life Tools</span></button>
+ </nav>
+ <div class="sidebar-bottom"><div class="mini-card"><b>UTILITY</b><br>Everything you need. One place.</div></div>
+</aside>
+
+<main class="main">
+<header class="top">
+ <div class="headline"><div style="display:flex;align-items:center;gap:8px"><button class="btn hamb" id="hamb">☰</button><h1 id="greeting">Good evening.</h1></div><p id="dateLine"></p></div>
+ <div class="actions"><button class="btn hide-mobile" id="commandBtn">⌘ Search</button><button class="btn hide-mobile" id="theme">◐ Theme: <span id="themeName">Rose</span></button><button class="btn primary" id="addTop">＋ Add</button></div>
+</header>
+
+<section id="dashboard" class="view active">
+<div class="grid"><div class="stack">
+ <div class="card hero"><div class="hero-row"><div><div class="eyebrow">TODAY'S COMMAND CENTER</div><div class="big"><span id="done">0</span>/<span id="total">0</span></div></div><div class="percent" id="percent">0% complete</div></div><div class="progress"><i id="bar"></i></div></div>
+ <div class="card pad"><div class="section-head"><div><h2>Today's priorities</h2><div class="sub">Get the important things out of your head.</div></div><button class="btn" id="clearDone">Clear done</button></div>
+ <div class="addbar"><input class="input" id="quickTitle" placeholder="What needs to be done?"><input class="input" id="quickTime" type="time"><select class="input" id="quickPriority"><option>Normal</option><option>High</option><option>Low</option></select><button class="btn primary" id="quickAdd">Add</button></div><div class="tasks" id="todayTasks"></div></div>
+ <div class="card pad"><div class="section-head"><div><h2>Productivity snapshot</h2></div></div><div class="stats"><div class="stat"><b id="openN">0</b><span>Open tasks</span></div><div class="stat"><b id="highN">0</b><span>High priority</span></div><div class="stat"><b id="upN">0</b><span>Upcoming</span></div><div class="stat"><b id="habitN">0</b><span>Best streak</span></div></div></div>
+ </div>
+ <div class="stack">
+  <div class="card pad">
+    <div class="section-head"><h2>Hydration Tracker</h2><span class="sub">Target: 8 Glasses</span></div>
+    <div class="glass-hydration">
+      <div class="glass-display">
+        <div class="glass-count"><span id="glassesVal">0</span> <small>/ 8 Glasses</small></div>
+        <div style="font-size: 22px;">🥛</div>
+      </div>
+      <div class="glass-bar-container">
+        <div class="glass-bar-fill" id="glassBarFill"></div>
+      </div>
+      <div class="glass-btn-row">
+        <button class="glass-btn" id="add1Glass">＋ 1 Glass</button>
+        <button class="glass-btn" id="add2Glasses">＋ 2 Glasses</button>
+        <button class="glass-btn" id="resetGlassBtn">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card pad"><div class="section-head"><h2>Scratchpad</h2></div><textarea class="scratchpad" id="scratchpad" placeholder="Type quick notes here..."></textarea></div>
+  <div class="card pad"><div class="section-head"><h2>Calendar</h2><span class="sub" id="month"></span></div><div class="calendar" id="calendar"></div></div>
+  <div class="card pad"><div class="quote" id="quote"></div></div>
+ </div>
+</div></section>
+
+<section id="today" class="view"><div class="card pad"><div class="section-head"><div><h2>Today's plan</h2><div class="sub" id="todayDate"></div></div><button class="btn primary" id="addToday">＋ Add</button></div><div id="todayFull" class="tasks"></div></div></section>
+<section id="tomorrow" class="view"><div class="card pad"><div class="section-head"><div><h2>Tomorrow's plan</h2><div class="sub" id="tomDate"></div></div><button class="btn primary" id="addTomorrow">＋ Add</button></div><div id="tomTasks" class="tasks"></div></div></section>
+<section id="upcoming" class="view"><div class="toolbar"><input class="input search" id="search" placeholder="Search tasks..."><select class="input" id="filter"><option value="all">Everything</option><option value="high">High priority</option><option value="open">Open only</option><option value="done">Completed</option></select><select class="input" id="sort"><option value="date">Sort by date</option><option value="priority">Priority first</option></select><button class="btn primary" id="addUpcoming">＋ Add</button></div><div class="card pad"><div id="upcomingList" class="upcoming"></div></div></section>
+<section id="habits" class="view"><div class="card pad"><div class="section-head"><div><h2>Habit studio</h2></div><button class="btn primary" id="addHabit">＋ New habit</button></div><div class="habit-grid" id="habitGrid"></div></div></section>
+<section id="expenses" class="view"><div class="card pad"><div class="section-head"><div><h2>Expense Tracker</h2></div></div>
+<div class="addbar"><input class="input" id="expDesc" placeholder="Description"><input class="input" id="expAmount" type="number" placeholder="Amount"><select class="input" id="expCat"><option>Food</option><option>Travel</option><option>Shopping</option><option>Bills</option><option>Other</option></select><button class="btn primary" id="saveExpense">Add</button></div>
+<div class="section-head" style="margin-top:20px;"><h3>Total Spent: ₹<span id="totalSpent">0</span></h3></div>
+<div class="expense-list" id="expenseList"></div>
+</div></section>
+<section id="focus" class="view"><div class="focus-grid"><div class="card pad"><div class="section-head"><h2>Deep focus</h2></div><div class="ring" id="ring"><span id="focusBig">25:00</span></div><div class="timer-controls"><button class="btn primary" id="focusStart">Start focus</button><button class="btn" id="focusReset">Reset</button></div></div></div></section>
+<section id="notes" class="view"><div class="card pad"><div class="section-head"><h2>Notes</h2><button class="btn primary" id="newNote">＋ New note</button></div><div class="notes-grid"><div class="note-list" id="noteList"></div><div class="note-editor"><input class="input" id="noteTitle" placeholder="Title"><textarea class="input" id="noteBody" placeholder="Notes..."></textarea><button class="btn primary" id="saveNote">Save note</button></div></div></div></section>
+<section id="tools" class="view"><div class="card pad"><h2>Life Tools</h2><div id="checklist"></div></div></section>
+</main></div>
+
+<div class="modal" id="modal"><div class="modal-box"><div class="section-head"><h2 id="modalTitle">New task</h2><button class="iconbtn" id="closeModalBtn">✕</button></div><form class="form" id="taskForm"><input class="input" id="taskTitle" required placeholder="Task title"><div class="formrow"><input class="input" id="taskDate" type="date" required><input class="input" id="taskTime" type="time"></div><div class="formrow"><select class="input" id="taskPriority"><option>Normal</option><option>High</option><option>Low</option></select><input class="input" id="taskCategory" placeholder="Category"></div><textarea class="input" id="taskDetails" rows="4" placeholder="Details..."></textarea><button class="btn primary">Save task</button></form></div></div>
+<div class="command" id="command"><div class="command-box"><input class="input" id="cmdSearch" placeholder="Search commands..."><div class="commands" id="commands"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const K = {
+    tasks: 'utility_tasks_final',
+    habits: 'utility_habits_final',
+    notes: 'utility_notes_final',
+    theme: 'utility_theme_choice',
+    focus: 'utility_focus_final',
+    checks: 'utility_checks_final',
+    glasses: 'utility_glasses_count',
+    expenses: 'utility_expenses_final',
+    scratchpad: 'utility_scratchpad_final'
+  };
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  const pad = n => String(n).padStart(2, '0');
+  
+  const key = d => {
+    d = new Date(d);
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  };
+
+  const today = key(Date.now());
+  const tomorrow = key(Date.now() + 86400000);
+
+  let tasks = JSON.parse(localStorage.getItem(K.tasks) || '[]');
+  let habits = JSON.parse(localStorage.getItem(K.habits) || '[]');
+  let notes = JSON.parse(localStorage.getItem(K.notes) || '[]');
+  let expenses = JSON.parse(localStorage.getItem(K.expenses) || '[]');
+  let focusData = JSON.parse(localStorage.getItem(K.focus) || '{"date":"","sessions":0,"minutes":0}');
+  let checks = JSON.parse(localStorage.getItem(K.checks) || '{}');
+  let glassesData = JSON.parse(localStorage.getItem(K.glasses) || '{}');
+  let editId = null, selectedNote = null;
+
+  // Focus Timer Variables
+  let timerInt = null;
+  let timerTime = 1500; // 25 minutes
+  let isTimerRunning = false;
+
+  const quotes = [
+    ["Small progress is still progress.", "UTILITY"],
+    ["Focus on the next useful thing.", "UTILITY"],
+    ["Your future self will thank you.", "UTILITY"]
+  ];
+
+  window.save = function() {
+    localStorage.setItem(K.tasks, JSON.stringify(tasks));
+    localStorage.setItem(K.habits, JSON.stringify(habits));
+    localStorage.setItem(K.notes, JSON.stringify(notes));
+    localStorage.setItem(K.focus, JSON.stringify(focusData));
+    localStorage.setItem(K.checks, JSON.stringify(checks));
+    localStorage.setItem(K.expenses, JSON.stringify(expenses));
+    localStorage.setItem(K.glasses, JSON.stringify(glassesData));
+    render();
+  };
+
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    }[m]));
+  }
+
+  function fmt(d) {
+    const [y, m, day] = d.split('-').map(Number);
+    return new Date(y, m - 1, day).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function sortTask(a, b) {
+    return (a.done - b.done) || ((a.time || '99:99').localeCompare(b.time || '99:99'));
+  }
+
+  function taskHTML(t) {
+    return `<div class="task ${t.done ? 'done' : ''}">` +
+      `<button class="check ${t.done ? 'on' : ''}" onclick="toggleTask('${t.id}')">${t.done ? '✓' : ''}</button>` +
+      `<div><div class="title">${esc(t.title)}</div>` +
+      `<div class="meta">${t.time || 'No time'} · ${esc(t.category || 'General')} · ${t.priority}${t.details ? ' · ' + esc(t.details) : ''}</div></div>` +
+      `<div class="task-actions"><button class="iconbtn" onclick="editTask('${t.id}')">✎</button>` +
+      `<button class="iconbtn" onclick="delTask('${t.id}')">🗑</button></div></div>`;
+  }
+
+  function render() {
+    let td = tasks.filter(t => t.date === today).sort(sortTask);
+    let tm = tasks.filter(t => t.date === tomorrow).sort(sortTask);
+    
+    if ($('#todayTasks')) $('#todayTasks').innerHTML = td.length ? td.map(taskHTML).join('') : '<div class="empty">No tasks yet.</div>';
+    if ($('#todayFull')) $('#todayFull').innerHTML = td.length ? td.map(taskHTML).join('') : '<div class="empty">Today is clear.</div>';
+    if ($('#tomTasks')) $('#tomTasks').innerHTML = tm.length ? tm.map(taskHTML).join('') : '<div class="empty">Tomorrow is clear.</div>';
+
+    let q = ($('#search')?.value || '').toLowerCase();
+    let f = $('#filter')?.value || 'all';
+    let s = $('#sort')?.value || 'date';
+    let up = tasks.filter(t => t.date > today);
+
+    if (f === 'high') up = up.filter(t => t.priority === 'High');
+    if (f === 'open') up = up.filter(t => !t.done);
+    if (f === 'done') up = up.filter(t => t.done);
+
+    up = up.filter(t => (t.title + ' ' + t.category + ' ' + t.details).toLowerCase().includes(q));
+    up.sort(s === 'priority' 
+      ? (a, b) => ({ High: 0, Normal: 1, Low: 2 }[a.priority] - { High: 0, Normal: 1, Low: 2 }[b.priority]) || a.date.localeCompare(b.date) 
+      : (a, b) => a.date.localeCompare(b.date) || sortTask(a, b)
+    );
+
+    if ($('#upcomingList')) {
+      $('#upcomingList').innerHTML = up.length 
+        ? up.map(t => `<div class="up-row"><div class="date-pill">${fmt(t.date)}</div>${taskHTML(t)}</div>`).join('') 
+        : '<div class="empty">No matching upcoming tasks.</div>';
+    }
+
+    let done = td.filter(t => t.done).length;
+    let p = td.length ? Math.round(done / td.length * 100) : 0;
+
+    if ($('#done')) $('#done').textContent = done;
+    if ($('#total')) $('#total').textContent = td.length;
+    if ($('#percent')) $('#percent').textContent = p + '% complete';
+    if ($('#bar')) $('#bar').style.width = p + '%';
+    if ($('#openN')) $('#openN').textContent = tasks.filter(t => !t.done && t.date >= today).length;
+    if ($('#highN')) $('#highN').textContent = tasks.filter(t => !t.done && t.priority === 'High').length;
+    if ($('#upN')) $('#upN').textContent = tasks.filter(t => t.date > today).length;
+    if ($('#habitN')) $('#habitN').textContent = habits.reduce((a, h) => Math.max(a, h.streak || 0), 0);
+
+    renderCalendar(); renderHabits(); renderNotes(); renderChecklist(); renderGlasses(); renderExpenses();
+  }
+
+  function renderGlasses() {
+    let currentGlasses = glassesData[today] || 0;
+    let percentage = Math.min(100, Math.round((currentGlasses / 8) * 100));
+    if ($('#glassesVal')) $('#glassesVal').textContent = currentGlasses;
+    const fillEl = $('#glassBarFill');
+    if (fillEl) fillEl.style.width = percentage + '%';
+  }
+
+  function addGlass(n) {
+    glassesData[today] = (glassesData[today] || 0) + n;
+    window.save();
+    toast(`Logged +${n} glass${n > 1 ? 'es' : ''} 🥛`);
+  }
+
+  // Global Function Attachments
+  window.toggleTask = id => {
+    let t = tasks.find(x => x.id === id);
+    if (t) { t.done = !t.done; window.save(); toast(t.done ? 'Task completed ✓' : 'Task reopened'); }
+  };
+
+  window.delTask = id => {
+    tasks = tasks.filter(t => t.id !== id); window.save(); toast('Task deleted');
+  };
+
+  window.editTask = id => openTask('today', tasks.find(t => t.id === id));
+
+  window.delExpense = id => {
+    expenses = expenses.filter(e => e.id !== id); window.save();
+  };
+
+  window.hitHabit = (id, k) => {
+    let h = habits.find(x => x.id === id);
+    if (!h) return;
+    let i = (h.days || []).indexOf(k);
+    if (i >= 0) h.days.splice(i, 1); else (h.days = h.days || []).push(k);
+    window.save();
+  };
+
+  window.removeHabit = id => {
+    habits = habits.filter(h => h.id !== id); window.save(); toast('Habit removed');
+  };
+
+  window.toggleCheck = (index, checked) => {
+    checks[index] = checked;
+    window.save();
+  };
+
+  window.openNote = (id = null) => {
+    showView('notes'); selectedNote = id; renderNotes();
+    if (id) {
+      let n = notes.find(x => x.id === id);
+      if (n) { $('#noteTitle').value = n.title; $('#noteBody').value = n.body; }
+    } else {
+      $('#noteTitle').value = ''; $('#noteBody').value = '';
+    }
+  };
+
+  function openTask(when = 'today', existing = null) {
+    editId = existing?.id || null;
+    $('#modal')?.classList.add('show');
+    if ($('#modalTitle')) $('#modalTitle').textContent = existing ? 'Edit task' : 'New task';
+    $('#taskForm')?.reset();
+    if ($('#taskDate')) $('#taskDate').value = existing?.date || (when === 'tomorrow' ? tomorrow : when === 'upcoming' ? key(Date.now() + 3 * 86400000) : today);
+    if (existing) {
+      if ($('#taskTitle')) $('#taskTitle').value = existing.title;
+      if ($('#taskTime')) $('#taskTime').value = existing.time || '';
+      if ($('#taskPriority')) $('#taskPriority').value = existing.priority;
+      if ($('#taskCategory')) $('#taskCategory').value = existing.category || '';
+      if ($('#taskDetails')) $('#taskDetails').value = existing.details || '';
+    }
+  }
+
+  function closeModal() { $('#modal')?.classList.remove('show'); editId = null; }
+
+  // Theme Toggle
+  function toggleTheme() {
+    const isEmerald = document.body.classList.toggle('theme-emerald');
+    const name = isEmerald ? 'Emerald' : 'Rose';
+    localStorage.setItem(K.theme, name);
+    if ($('#themeName')) $('#themeName').textContent = name;
+  }
+
+  // Focus Timer Logic
+  function updateFocusDisplay() {
+    const m = pad(Math.floor(timerTime / 60));
+    const s = pad(timerTime % 60);
+    if ($('#focusBig')) $('#focusBig').textContent = `${m}:${s}`;
+    if ($('#ring')) {
+      const deg = ((1500 - timerTime) / 1500) * 360;
+      $('#ring').style.background = `conic-gradient(var(--rose) ${deg}deg, var(--soft) 0deg)`;
+    }
+  }
+
+  function startFocus() {
+    if (isTimerRunning) {
+      clearInterval(timerInt);
+      isTimerRunning = false;
+      if ($('#focusStart')) $('#focusStart').textContent = 'Start focus';
+      return;
+    }
+    isTimerRunning = true;
+    if ($('#focusStart')) $('#focusStart').textContent = 'Pause';
+    timerInt = setInterval(() => {
+      if (timerTime > 0) {
+        timerTime--;
+        updateFocusDisplay();
+      } else {
+        clearInterval(timerInt);
+        isTimerRunning = false;
+        toast('Focus session complete! 🎉');
+        if ($('#focusStart')) $('#focusStart').textContent = 'Start focus';
+        timerTime = 1500;
+        updateFocusDisplay();
+      }
+    }, 1000);
+  }
+
+  function resetFocus() {
+    clearInterval(timerInt);
+    isTimerRunning = false;
+    timerTime = 1500;
+    if ($('#focusStart')) $('#focusStart').textContent = 'Start focus';
+    updateFocusDisplay();
+  }
+
+  // Command Center Palette Logic
+  const commandsList = [
+    { title: 'Go to Dashboard', action: () => showView('dashboard') },
+    { title: 'Go to Today', action: () => showView('today') },
+    { title: 'Go to Tomorrow', action: () => showView('tomorrow') },
+    { title: 'Go to Upcoming', action: () => showView('upcoming') },
+    { title: 'Go to Habits', action: () => showView('habits') },
+    { title: 'Go to Expenses', action: () => showView('expenses') },
+    { title: 'Go to Focus', action: () => showView('focus') },
+    { title: 'Go to Notes', action: () => showView('notes') },
+    { title: 'Go to Life Tools', action: () => showView('tools') },
+    { title: 'Add New Task', action: () => openTask() },
+    { title: 'Toggle Theme', action: () => toggleTheme() }
+  ];
+
+  function openCommand() {
+    $('#command')?.classList.add('show');
+    if ($('#cmdSearch')) { $('#cmdSearch').value = ''; $('#cmdSearch').focus(); }
+    renderCommands('');
+  }
+
+  function closeCommand() { $('#command')?.classList.remove('show'); }
+
+  function renderCommands(filter) {
+    if (!$('#commands')) return;
+    const query = filter.toLowerCase();
+    const matched = commandsList.filter(c => c.title.toLowerCase().includes(query));
+    $('#commands').innerHTML = matched.length ? matched.map((c, i) => `
+      <div class="cmd" data-index="${i}">${esc(c.title)}</div>
+    `).join('') : '<div class="empty">No matching commands</div>';
+
+    $$('#commands .cmd').forEach((el, index) => {
+      el.onclick = () => {
+        matched[index].action();
+        closeCommand();
+      };
+    });
+  }
+
+  // Event Listeners with Null Safeguards
+  if ($('#theme')) {
+    $('#theme').onclick = toggleTheme;
+    const savedTheme = localStorage.getItem(K.theme);
+    if (savedTheme === 'Emerald') {
+      document.body.classList.add('theme-emerald');
+      if ($('#themeName')) $('#themeName').textContent = 'Emerald';
+    }
+  }
+
+  if ($('#commandBtn')) $('#commandBtn').onclick = openCommand;
+  if ($('#cmdSearch')) $('#cmdSearch').oninput = e => renderCommands(e.target.value);
+  if ($('#command')) $('#command').onclick = e => { if (e.target === $('#command')) closeCommand(); };
+
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      openCommand();
+    }
+    if (e.key === 'Escape') {
+      closeCommand();
+      closeModal();
+    }
+  });
+
+  if ($('#focusStart')) $('#focusStart').onclick = startFocus;
+  if ($('#focusReset')) $('#focusReset').onclick = resetFocus;
+
+  if ($('#add1Glass')) $('#add1Glass').onclick = () => addGlass(1);
+  if ($('#add2Glasses')) $('#add2Glasses').onclick = () => addGlass(2);
+  if ($('#resetGlassBtn')) $('#resetGlassBtn').onclick = () => { glassesData[today] = 0; window.save(); toast('Hydration reset'); };
+
+  if ($('#scratchpad')) {
+    $('#scratchpad').value = localStorage.getItem(K.scratchpad) || '';
+    $('#scratchpad').oninput = e => localStorage.setItem(K.scratchpad, e.target.value);
+  }
+
+  if ($('#saveExpense')) {
+    $('#saveExpense').onclick = () => {
+      let desc = $('#expDesc').value.trim(), amt = parseFloat($('#expAmount').value);
+      if (!desc || isNaN(amt)) return;
+      expenses.push({ id: crypto.randomUUID(), desc, amt, cat: $('#expCat').value, date: today });
+      $('#expDesc').value = ''; $('#expAmount').value = ''; window.save(); toast('Expense added ✓');
+    };
+  }
+
+  function renderExpenses() {
+    let total = expenses.reduce((a, e) => a + e.amt, 0);
+    if ($('#totalSpent')) $('#totalSpent').textContent = total.toFixed(2);
+    if ($('#expenseList')) {
+      $('#expenseList').innerHTML = expenses.length ? expenses.map(e => `
+        <div class="expense-item">
+          <div><b>${esc(e.desc)}</b> <small style="color:var(--muted)">(${e.cat})</small></div>
+          <div><b>₹${e.amt}</b> <button class="iconbtn" onclick="delExpense('${e.id}')">🗑</button></div>
+        </div>
+      `).join('') : '<div class="empty">No expenses recorded.</div>';
+    }
+  }
+
+  if ($('#taskForm')) {
+    $('#taskForm').onsubmit = e => {
+      e.preventDefault();
+      let d = {
+        title: $('#taskTitle').value.trim(),
+        date: $('#taskDate').value,
+        time: $('#taskTime').value,
+        priority: $('#taskPriority').value,
+        category: $('#taskCategory').value.trim(),
+        details: $('#taskDetails').value.trim()
+      };
+      if (editId) Object.assign(tasks.find(t => t.id === editId), d);
+      else tasks.push({ id: crypto.randomUUID(), ...d, done: false });
+      closeModal(); window.save(); toast('Saved ✓');
+    };
+  }
+
+  function showView(v) {
+    $$('.view').forEach(x => x.classList.remove('active'));
+    $('#' + v)?.classList.add('active');
+    $$('.nav button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+    $('#sidebar')?.classList.remove('open');
+  }
+
+  $$('.nav button').forEach(b => b.onclick = () => showView(b.dataset.view));
+
+  if ($('#addTop')) $('#addTop').onclick = () => openTask();
+  if ($('#addToday')) $('#addToday').onclick = () => openTask('today');
+  if ($('#addTomorrow')) $('#addTomorrow').onclick = () => openTask('tomorrow');
+  if ($('#addUpcoming')) $('#addUpcoming').onclick = () => openTask('upcoming');
+  if ($('#closeModalBtn')) $('#closeModalBtn').onclick = closeModal;
+  if ($('#hamb')) $('#hamb').onclick = () => $('#sidebar')?.classList.toggle('open');
+  if ($('#clearDone')) $('#clearDone').onclick = () => { tasks = tasks.filter(t => !(t.date === today && t.done)); window.save(); toast('Completed tasks cleared'); };
+
+  if ($('#quickAdd')) {
+    $('#quickAdd').onclick = () => {
+      let title = $('#quickTitle').value.trim(); if (!title) return;
+      tasks.push({ id: crypto.randomUUID(), title, date: today, time: $('#quickTime').value, priority: $('#quickPriority').value, category: 'General', details: '', done: false });
+      $('#quickTitle').value = ''; $('#quickTime').value = ''; window.save(); toast('Task added ✓');
+    };
+  }
+  if ($('#quickTitle')) $('#quickTitle').onkeydown = e => { if (e.key === 'Enter') $('#quickAdd')?.click(); };
+
+  if ($('#search')) $('#search').oninput = render;
+  if ($('#filter')) $('#filter').onchange = render;
+  if ($('#sort')) $('#sort').onchange = render;
+
+  function renderCalendar() {
+    let d = new Date(), y = d.getFullYear(), m = d.getMonth(), first = new Date(y, m, 1).getDay(), days = new Date(y, m + 1, 0).getDate();
+    if ($('#month')) $('#month').textContent = d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+    let h = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(x => `<div class="head">${x}</div>`).join('');
+    for (let i = 0; i < first; i++) h += '<div></div>';
+    for (let n = 1; n <= days; n++) {
+      let k = key(new Date(y, m, n)), c = k === today ? 'today' : '';
+      if (tasks.some(t => t.date === k)) c += ' has';
+      h += `<div class="${c}">${n}</div>`;
+    }
+    if ($('#calendar')) $('#calendar').innerHTML = h;
+  }
+
+  function renderHabits() {
+    if (!$('#habitGrid')) return;
+    if (!habits.length) { $('#habitGrid').innerHTML = '<div class="empty">No habits set.</div>'; return; }
+    $('#habitGrid').innerHTML = habits.map(h => `
+      <div class="habit">
+        <div class="habit-top">
+          <div><h3>${esc(h.name)}</h3></div>
+          <button class="iconbtn" onclick="removeHabit('${h.id}')">🗑</button>
+        </div>
+        <div class="days">${Array.from({ length: 14 }, (_, i) => {
+          let k = key(Date.now() - (13 - i) * 86400000), hit = (h.days || []).includes(k);
+          return `<button class="day ${hit ? 'hit' : ''}" onclick="hitHabit('${h.id}','${k}')"></button>`;
+        }).join('')}</div>
+      </div>
+    `).join('');
+  }
+
+  if ($('#addHabit')) {
+    $('#addHabit').onclick = () => {
+      let n = prompt('Habit name?');
+      if (n?.trim()) { habits.push({ id: crypto.randomUUID(), name: n.trim(), days: [], streak: 0 }); window.save(); toast('Habit created ✓'); }
+    };
+  }
+
+  function renderNotes() {
+    if (!$('#noteList')) return;
+    if (!notes.length) { $('#noteList').innerHTML = '<div class="empty">No notes yet.</div>'; return; }
+    $('#noteList').innerHTML = notes.map(n => `
+      <div class="note-item ${selectedNote === n.id ? 'active' : ''}" onclick="openNote('${n.id}')">
+        <b>${esc(n.title || 'Untitled')}</b>
+      </div>
+    `).join('');
+  }
+
+  if ($('#newNote')) $('#newNote').onclick = () => openNote();
+  if ($('#saveNote')) {
+    $('#saveNote').onclick = () => {
+      let title = $('#noteTitle').value.trim() || 'Untitled', body = $('#noteBody').value;
+      if (selectedNote) {
+        let n = notes.find(x => x.id === selectedNote);
+        if (n) Object.assign(n, { title, body, updated: Date.now() });
+      } else {
+        let n = { id: crypto.randomUUID(), title, body, updated: Date.now() };
+        notes.unshift(n); selectedNote = n.id;
+      }
+      window.save(); toast('Note saved ✓');
+    };
+  }
+
+  function renderChecklist() {
+    if (!$('#checklist')) return;
+    let items = ['Drink water', 'Review top priorities', 'Clean workspace'];
+    $('#checklist').innerHTML = items.map((x, i) => `
+      <label style="display:flex;gap:10px;padding:8px;">
+        <input type="checkbox" ${checks[i] ? 'checked' : ''} onchange="toggleCheck(${i}, this.checked)">
+        <span>${x}</span>
+      </label>
+    `).join('');
+  }
+
+  function toast(s) {
+    let x = $('#toast');
+    if (!x) return;
+    x.textContent = s; x.classList.add('show');
+    setTimeout(() => x.classList.remove('show'), 1900);
+  }
+
+  function init() {
+    let h = new Date().getHours();
+    if ($('#greeting')) $('#greeting').textContent = h < 12 ? 'Good morning.' : h < 17 ? 'Good afternoon.' : 'Good evening.';
+    if ($('#dateLine')) $('#dateLine').textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    if ($('#todayDate')) $('#todayDate').textContent = fmt(today);
+    if ($('#tomDate')) $('#tomDate').textContent = fmt(tomorrow);
+    
+    let q = quotes[new Date().getDate() % quotes.length];
+    if ($('#quote')) $('#quote').innerHTML = `${q[0]}<b>— ${q[1]}</b>`;
+    render();
+    updateFocusDisplay();
+  }
+
+  init();
+});
+</script>
+</body>
+</html>
